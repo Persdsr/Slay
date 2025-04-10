@@ -1,0 +1,96 @@
+spring:
+  application:
+    name: Slay
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+
+  messages:
+    encoding: UTF-8
+    basename: messages
+
+  web:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    locale-resolver: accept-header
+
+  servlet:
+    multipart:
+      max-file-size: 3500MB
+      max-request-size: 3500MB
+      enabled: true
+    encoding:
+      charset: UTF-8
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    admin:
+      auto-create: true
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false
+
+server:
+  tomcat:
+    response-character-encoding: UTF-8
+    request-character-encoding: UTF-8
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+
+slay:
+  app:
+    secret: ${APP_SECRET}
+    lifetime: 600000000
+    httpprotocol: ${HTTP_PROTOCOL}
+    domain: ${DOMAIN}
+
+yookassa:
+  shop-id: ${SHOP_ID}
+  secret-key: ${SHOP_SECRET_KEY}
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          socket:
+            config:
+              WebSocketMessageBrokerStats: OFF
+
+storage:
+  location: /app/uploads

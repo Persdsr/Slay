@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  app:
+    image: notification-microservice:latest
+    container_name: notification-microservice-container
+    ports:
+      - "8000:8000"
+    restart: always

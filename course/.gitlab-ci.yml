@@ -1,0 +1,30 @@
+stages:
+  - test
+  - build
+  - deploy
+
+test-job:
+  stage: test
+  image: maven:3.9.9-amazoncorretto-21
+  script:
+    - mvn test
+  only:
+    - master
+    - merge_requests
+
+
+build-job:
+  stage: build
+  script:
+    - docker build -t my-backend .
+  only:
+    - master
+
+
+deploy-job:
+  stage: deploy
+  script:
+    - docker compose -f docker-compose.prod.yml down
+    - docker compose -f docker-compose.prod.yml up -d
+  only:
+    - master
