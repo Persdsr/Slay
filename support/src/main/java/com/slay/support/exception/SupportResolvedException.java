@@ -1,0 +1,14 @@
+package com.slay.support.exception;
+
+import com.slay.support.enums.Code;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
+
+@Data
+@Builder
+public class SupportResolvedException extends RuntimeException {
+    private final Code code;
+    private final String message;
+    private final HttpStatus httpStatus;
+}

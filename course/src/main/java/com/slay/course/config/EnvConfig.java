@@ -19,10 +19,6 @@ public class EnvConfig {
         System.setProperty("REDIS_HOST", dotenv.get("REDIS_HOST"));
         System.setProperty("REDIS_PORT", dotenv.get("REDIS_PORT"));
 
-        System.setProperty("MAIL_HOST", dotenv.get("MAIL_HOST"));
-        System.setProperty("MAIL_PORT", dotenv.get("MAIL_PORT"));
-        System.setProperty("MAIL_USERNAME", dotenv.get("MAIL_USERNAME"));
-        System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
         System.setProperty("APP_SECRET", dotenv.get("APP_SECRET"));
     }
 }

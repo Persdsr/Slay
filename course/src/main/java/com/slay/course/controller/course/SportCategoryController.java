@@ -1,11 +1,11 @@
 package com.slay.course.controller.course;
 
-import com.slay.course.DTO.request.category.SportCategoryRequest;
-import com.slay.course.DTO.response.category.CategoriesTagsDTO;
-import com.slay.course.DTO.response.category.SportCategoryDTO;
-import com.slay.course.DTO.response.course.CategoryAndPopularTagsDTO;
-import com.slay.course.service.training.SportCategoryService;
-import com.slay.course.service.training.TagService;
+import com.slay.course.dto.request.category.SportCategoryRequest;
+import com.slay.course.dto.response.category.CategoriesTagsDTO;
+import com.slay.course.dto.response.category.SportCategoryDTO;
+import com.slay.course.dto.response.course.CategoryAndPopularTagsDTO;
+import com.slay.course.service.course.SportCategoryService;
+import com.slay.course.service.course.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

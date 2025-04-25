@@ -2,8 +2,6 @@ package com.slay.course.entity.course;
 
 import com.slay.course.entity.category.SportCategoryEntity;
 import com.slay.course.entity.category.TagEntity;
-import com.slay.course.entity.complaint.ComplaintCourseEntity;
-import com.slay.course.entity.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,21 +43,20 @@ public class TrainingCourseEntity implements Serializable {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
-    @ManyToOne()
-    @JoinColumn(name = "author_id")
-    @NotNull(message = "Author is required")
-    private UserEntity author;
+    @NotNull(message = "Author id is required")
+    private int authorId;
 
     @ManyToOne()
     @JoinColumn(name = "sport_category_id")
     @NotNull(message = "Category is required")
     private SportCategoryEntity category;
 
-    @ManyToMany()
-    @JoinTable(name = "training_course_buyers",
-                joinColumns = @JoinColumn(name = "training_course_id"),
-                inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<UserEntity> courseBuyers = new HashSet<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "training_course_buyers",
+            joinColumns = @JoinColumn(name = "training_course_id"))
+    @Column(name = "user_id")
+    private Set<Integer> buyers = new HashSet<>();
 
     @ManyToMany()
     @JoinTable(
@@ -75,11 +72,12 @@ public class TrainingCourseEntity implements Serializable {
     @OneToMany(mappedBy = "trainingCourse", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ReviewEntity> reviews;
 
-    @ManyToMany(mappedBy = "favoriteTrainingCourses")
-    private Set<UserEntity> favorites;
-
-    @OneToMany(mappedBy = "reportedCourse", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ComplaintCourseEntity> complaints;
+    @ElementCollection
+    @CollectionTable(
+            name = "course_favorites",
+            joinColumns = @JoinColumn(name = "course_id"))
+    @Column(name = "user_id")
+    private Set<Integer> favoriteUsers = new HashSet<>();
 
     public void addStep(TrainingCourseStepEntity step) {
         if (this.trainingCourseSteps == null) {

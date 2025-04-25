@@ -1,9 +1,10 @@
 package com.slay.course.controller.course;
 
-import com.slay.course.DTO.response.course.CourseResponse;
-import com.slay.course.DTO.response.course.SearchDTO;
-import com.slay.course.DTO.response.course.TrainingCourseLiteDTO;
-import com.slay.course.service.training.TrainingCourseService;
+import com.slay.course.dto.response.course.CourseResponse;
+import com.slay.course.dto.response.course.SearchDTO;
+import com.slay.course.dto.response.course.TrainingCourseLiteDTO;
+import com.slay.course.security.UserDetailsImpl;
+import com.slay.course.service.course.TrainingCourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,8 +34,34 @@ public class TrainingCourseController {
             description = "Возвращает детали курса по его идентификатору. Если пользователь является покупателем курса или его автором, возвращается полная информация о курсе. В противном случае возвращается сокращённая информация."
     )
     @GetMapping("/detail/{course-id}")
-    public ResponseEntity<CourseResponse> getTrainingCourseDetail(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("course-id") int courseId) {
+    public ResponseEntity<CourseResponse> getTrainingCourseDetail(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("course-id") int courseId) {
         return new ResponseEntity<>(trainingCourseService.getTrainingCourseDetail(userDetails, courseId), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Получить список курсов текущего пользователя",
+            description = "Возвращает список курсов, созданных текущим пользователем. Доступ к этому методу ограничен авторизованными пользователями."
+    )
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/my-courses")
+    public ResponseEntity<List<TrainingCourseLiteDTO>> getCoursesByAuthorId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return ResponseEntity.ok().body(trainingCourseService.getUserTrainingCourses(userDetails));
+    }
+
+    @GetMapping("/courses-by-ids")
+    public ResponseEntity<List<TrainingCourseLiteDTO>> getCoursesByIds(@RequestParam("ids") List<Integer> ids) {
+
+        return ResponseEntity.ok().body(trainingCourseService.getCoursesByIds(ids));
+    }
+
+
+    @PostMapping("/buy")
+    @PreAuthorize("isAuthenticated()")
+    public String buyTest(@RequestParam("courseId") Integer courseId,
+                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        trainingCourseService.handleBuyTrainingCourse(courseId, userDetails.getId());
+        return "OK";
     }
 
     @Operation(
@@ -51,19 +77,19 @@ public class TrainingCourseController {
             summary = "Получить список курсов текущего пользователя",
             description = "Возвращает список курсов, созданных текущим пользователем. Доступ к этому методу ограничен авторизованными пользователями."
     )
-    @GetMapping("/my-courses")
-    public ResponseEntity<List<TrainingCourseLiteDTO>> getCoursesByAuthor(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok().body(trainingCourseService.getUserTrainingCourses(userDetails));
+    @GetMapping("/author")
+    public ResponseEntity<List<TrainingCourseLiteDTO>> getTrainingCoursesByAuthorId(@RequestParam("authorId") Integer authorId) {
+        return ResponseEntity.ok().body(trainingCourseService.getTrainingCoursesByAuthorId(authorId));
     }
 
     @Operation(
-            summary = "Создать новый курс по бодибилдингу",
-            description = "Создает новый курс по бодибилдингу с указанными данными, включая постер, трейлер и видеофайлы. Доступ к этому методу ограничен авторизованными пользователями."
+            summary = "Создать новый курс",
+            description = "Создает новый курс с указанными данными, включая постер, трейлер и видеофайлы. Доступ к этому методу ограничен авторизованными пользователями."
     )
     @PreAuthorize("isAuthenticated()")
     @PostMapping()
     public ResponseEntity<HttpStatus> createTrainingCourse(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart("data") @Valid String data,
             @RequestPart(value = "poster", required = false) MultipartFile poster,
             @RequestPart(value = "trailer", required = false) MultipartFile trailer,
@@ -75,12 +101,13 @@ public class TrainingCourseController {
     }
 
     @Operation(
-            summary = "Обновить курс по бодибилдингу",
-            description = "Обновляет существующий курс по бодибилдингу с указанными данными, включая постер, трейлер и видеофайлы. Доступ к этому методу ограничен автором курса, администраторами и модераторами."
+            summary = "Обновить курс",
+            description = "Обновляет существующий курс указанными данными, включая постер, трейлер и видеофайлы. Доступ к этому методу ограничен автором курса, администраторами и модераторами."
     )
-    @PreAuthorize("@coursePermissionService.isCourseAuthor(#courseId, principal.username)")
+    @PreAuthorize("@coursePermissionService.isCourseAuthorById(#courseId, #userDetails.id)")
     @PutMapping("/update/{courseId}")
     public ResponseEntity<HttpStatus> updateTrainingCourse(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable int courseId,
             @RequestPart("data") String data,
             @RequestPart(value = "poster", required = false) MultipartFile poster,
@@ -97,12 +124,12 @@ public class TrainingCourseController {
             description = "Удаляет курс по его идентификатору. Доступ к этому методу ограничен автором курса, администраторами и модераторами."
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR') or " +
-            "@coursePermissionService.isCourseAuthor(#courseId, principal.username)")
+            "#userDetails != null and @coursePermissionService.isCourseAuthorById(#courseId, #userDetails.id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteTrainingCourse(@PathVariable("id") int courseId) {
+    public ResponseEntity<HttpStatus> deleteTrainingCourse(@PathVariable("id") int courseId,
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         trainingCourseService.deleteTrainingCourseById(courseId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.slay.course.entity.course;
 
-import com.slay.course.entity.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -41,10 +41,8 @@ public class ReviewEntity implements Serializable {
     @Max(5)
     private int rating;
 
-    @ManyToOne()
-    @JoinColumn(name = "author_id")
-    @NotNull(message = "Author is required")
-    private UserEntity author;
+    @NotNull(message = "Author id is required")
+    private int authorId;
 
     @CollectionTable(name = "review_images")
     @ElementCollection

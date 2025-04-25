@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Slay
+    name: course
 
   datasource:
     url: ${DB_URL}
@@ -14,7 +14,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
 
   cache:
     type: redis
@@ -44,24 +43,18 @@ spring:
     encoding:
       charset: UTF-8
 
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
   kafka:
     bootstrap-servers: localhost:9092
-    admin:
-      auto-create: true
-
-  mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          starttls:
-            enable: false
+      spring.json.add.type.headers: false
 
 server:
   tomcat:
@@ -71,6 +64,7 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  port: 8002
 
 slay:
   app:
@@ -94,3 +88,15 @@ logging:
 
 storage:
   location: /app/uploads
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+    instances:
+      user-service:
+        baseConfig: default

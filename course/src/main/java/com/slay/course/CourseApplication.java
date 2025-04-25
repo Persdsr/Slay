@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,32 +22,12 @@ import org.springframework.web.filter.CorsFilter;
 @EnableScheduling
 @EnableCaching
 @EnableJpaAuditing
+@EnableFeignClients
 public class CourseApplication {
 
     public static void main(String[] args) {
         EnvConfig.load();
         SpringApplication.run(CourseApplication.class, args);
-    }
-
-    @Value("${slay.app.domain}")
-    private String appDomain;
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.addAllowedOrigin(appDomain);
-
-        config.addAllowedMethod("*");
-
-        config.addAllowedHeader("*");
-
-        config.setAllowCredentials(true);
-
-        source.registerCorsConfiguration("/**", config);
-
-        return new CorsFilter(source);
     }
 
 }

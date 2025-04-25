@@ -12,12 +12,12 @@ public class ReviewPermissionService {
 
     private final TrainingCourseReviewRepo reviewRepo;
 
-    public boolean isReviewAuthor(int reviewId, String username) {
+    public boolean isReviewAuthor(int reviewId, Integer userId) {
 
         ReviewEntity review = reviewRepo.findById(reviewId)
                 .orElseThrow(() -> ReviewNotFoundException.builder().build());
 
-        return review.getAuthor().equals(username);
+        return review.getAuthorId() == userId;
     }
 
 }

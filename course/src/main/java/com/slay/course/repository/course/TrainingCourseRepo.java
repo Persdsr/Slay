@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface TrainingCourseRepo extends JpaRepository<TrainingCourseEntity, Integer> {
     Optional<TrainingCourseEntity> findByName(String courseName);
     List<TrainingCourseEntity> findByNameContainingIgnoreCase(String name);
-    List<TrainingCourseEntity> findAllByAuthorUsername(String username);
+    List<TrainingCourseEntity> findAllByAuthorId(Integer authorId);
 }

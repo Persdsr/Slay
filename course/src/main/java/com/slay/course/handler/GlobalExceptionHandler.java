@@ -1,8 +1,7 @@
 package com.slay.course.handler;
 
 import com.slay.course.enums.Code;
-import com.slay.course.exception.ChatNotFoundException;
-import com.slay.course.exception.ComplaintNotFoundException;
+
 import com.slay.course.exception.InvalidChatMemberException;
 import com.slay.course.exception.SupportResolvedException;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -24,16 +23,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidChatMemberException.class)
     public ResponseEntity<ErrorResponse> handleInvalidChatMemberException(InvalidChatMemberException ex) {
         return new ResponseEntity<>(ErrorResponse.builder().error(Error.builder().code(Code.NOT_FOUND).message("Access denied").build()).build(), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(ChatNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleChatNotFoundException(ChatNotFoundException ex) {
-        return new ResponseEntity<>(ErrorResponse.builder().error(Error.builder().code(Code.NOT_FOUND).message("Chat not found").build()).build(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ComplaintNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleComplaintNotFoundException(ComplaintNotFoundException ex) {
-        return new ResponseEntity<>(ErrorResponse.builder().error(Error.builder().code(Code.NOT_FOUND).message("Complaint not found").build()).build(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SupportResolvedException.class)

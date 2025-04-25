@@ -1,9 +1,9 @@
 package com.slay.course.controller.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.slay.course.DTO.request.payment.PaymentNotification;
-import com.slay.course.DTO.request.payment.PaymentRequest;
-import com.slay.course.service.training.TrainingCourseService;
+import com.slay.course.dto.request.payment.PaymentNotification;
+import com.slay.course.dto.request.payment.PaymentRequest;
+import com.slay.course.service.course.TrainingCourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,6 @@ import java.util.UUID;
 public class PaymentController {
 
     private final TrainingCourseService trainingCourseService;
-
 
     @Value("${yookassa.shop-id}")
     private String shopId;
@@ -128,7 +127,7 @@ public class PaymentController {
             if ("succeeded".equals(notification.getObject().getStatus())) {
 
                 int courseId = Integer.parseInt(notification.getObject().getMetadata().getCourseId());
-                String buyerUsername = notification.getObject().getMetadata().getBuyerUsername();
+                Integer buyerUsername = notification.getObject().getMetadata().getBuyerId();
 
                 trainingCourseService.handleBuyTrainingCourse(courseId, buyerUsername);
                 return HttpStatus.OK;

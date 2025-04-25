@@ -11,7 +11,9 @@
 
     <modules>
         <module>course</module>
-        <module>authentication</module>
+        <module>user</module>
+        <module>notification</module>
+        <module>support</module>
     </modules>
 
     <properties>

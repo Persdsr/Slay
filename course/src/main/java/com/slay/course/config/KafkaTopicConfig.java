@@ -24,4 +24,20 @@ public class KafkaTopicConfig {
                 .replicas(0)
                 .build();
     }
+
+    @Bean
+    public NewTopic buyCourseTopic() {
+        return TopicBuilder.name("buy-course")
+                .partitions(3)
+                .replicas(0)
+                .build();
+    }
+
+    @Bean
+    public NewTopic createCourseTopic() {
+        return TopicBuilder.name("create-course")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }

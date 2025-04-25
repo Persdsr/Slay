@@ -1,7 +1,8 @@
 package com.slay.course.controller.course;
 
-import com.slay.course.DTO.request.course.ReviewRequest;
-import com.slay.course.service.training.TrainingCourseReviewService;
+import com.slay.course.dto.request.course.ReviewRequest;
+import com.slay.course.security.UserDetailsImpl;
+import com.slay.course.service.course.TrainingCourseReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,14 +45,14 @@ public class TrainingCourseReviewController {
                             "  \"timestamp\": \"2025-03-12T13:39:23.322+00:00\",\n" +
                             "  \"status\": 415,\n" +
                             "  \"error\": \"Unsupported Media Type\",\n" +
-                            "  \"path\": \"/api/training-course/review\"\n" +
+                            "  \"path\": \"/api/course-course/review\"\n" +
                             "}")
             ))
     })
-    @PreAuthorize("@coursePermissionService.isCourseBuyer(#trainingCourseId, principal.username)")
+    @PreAuthorize("#userDetails != null and @coursePermissionService.isCourseBuyer(#trainingCourseId, #userDetails.id)")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> postTrainingCourseReview(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(
                     description = "Данные отзыва",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
@@ -80,10 +80,12 @@ public class TrainingCourseReviewController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав"),
             @ApiResponse(responseCode = "404", description = "Отзыв с указанным ID не найден")
     })
-    @PreAuthorize("@reviewPermissionService.isReviewAuthor(#reviewId, principal.username)")
+    @PreAuthorize("@reviewPermissionService.isReviewAuthor(#reviewId, #userDetails.id)")
     @PatchMapping("/update-fields/{id}")
-    public ResponseEntity<HttpStatus> updateReviewFields(@RequestBody Map<String, Object> fields,
-                                                      @PathVariable("id") int reviewId) {
+    public ResponseEntity<HttpStatus> updateReviewFields(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody Map<String, Object> fields,
+            @PathVariable("id") int reviewId) {
 
         trainingCourseReviewService.updateReviewFields(reviewId, fields);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -94,9 +96,11 @@ public class TrainingCourseReviewController {
             description = "Позволяет удалить отзыв по его идентификатору. Доступно только для пользователей с ролью ADMIN или MODERATOR."
     )
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR') or" +
-            " @reviewPermissionService.isReviewAuthor(#reviewId, principal.username)")
+            " @reviewPermissionService.isReviewAuthor(#reviewId, userDetails.id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteReview(@PathVariable("id") int reviewId) {
+    public ResponseEntity<HttpStatus> deleteReview(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable("id") int reviewId) {
         trainingCourseReviewService.deleteReviewById(reviewId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

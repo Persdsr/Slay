@@ -14,19 +14,19 @@ public class CoursePermissionService {
         this.trainingCourseRepo = trainingCourseRepo;
     }
 
-    public boolean isCourseAuthor(int courseId, String username) {
+    public boolean isCourseAuthorById(int courseId, Integer userId) {
         TrainingCourseEntity trainingCourse = trainingCourseRepo.findById(courseId)
                 .orElseThrow(() -> TrainingCourseNotFoundException.builder().build());
 
-        return trainingCourse.getAuthor().getUsername().equals(username);
+        return trainingCourse.getAuthorId() == userId;
     }
 
-    public boolean isCourseBuyer(int courseId, String username) {
+    public boolean isCourseBuyer(int courseId, Integer userId) {
         TrainingCourseEntity trainingCourse = trainingCourseRepo.findById(courseId).orElseThrow(
                 () -> TrainingCourseNotFoundException.builder().build()
         );
 
-        return trainingCourse.getCourseBuyers().stream()
-                .anyMatch(courseBuyer -> courseBuyer.getUsername().equals(username));
+        return trainingCourse.getBuyers().stream()
+                .anyMatch(courseBuyer -> courseBuyer.equals(userId));
     }
 }
