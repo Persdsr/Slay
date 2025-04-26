@@ -26,36 +26,49 @@
 
 ```mermaid
 flowchart TD
-    A[Клиент] -->|HTTP| B[API Gateway]
+    A["🌐 Клиент (Web/Mobile)"] -->|HTTP/HTTPS| B["🚪 API Gateway"]
 
     subgraph Backend Services
-        B --> C[User Service]
-        B --> D[Course Service]
-        B --> E[Complaint Service]
-        B --> F[Support Service]
-        B --> G[Notification Service]
+        B --> C["👤 User Service\n(JWT Auth, Profiles)"]
+        B --> D["📚 Course Service\n(Learning Content)"]
+        B --> E["⚠️ Complaint Service\n(Moderation)"]
+        B --> F["🛟 Support Service\n(Helpdesk)"]
+        B --> G["🔔 Notification Service\n(Emails/Push)"]
     end
 
-    subgraph Infrastructure
-        K[Kafka Broker]
-        DB[(PostgreSQL Database)]
-        R[(Redis Cache)]
+    subgraph Infrastructure["🛠️ Infrastructure"]
+        K["📡 Kafka Broker\n(Event Bus)"]
+        DB["🗄️ PostgreSQL\n(Main Data)"]
+        R["⚡ Redis\n(Cache/Sessions)"]
     end
 
-    C -->|DB & Cache| DB
-    C --> R
-    D -->|DB & Cache| DB
-    D --> R
-    E -->|DB & Cache| DB
-    E --> R
-    F -->|DB & Cache| DB
-    F --> R
-    G -->|DB & Cache| DB
-    G --> R
+%% Database connections
+    C & D & E & F & G --> DB
+    C & D & E & F & G --> R
 
-    C <--> K
-    D <--> K
-    E <--> K
-    F <--> K
-    G <--> K
+%% Event-driven connections
+    C -.->|User Events| K
+    D -.->|Course Events| K
+    E -.->|Complaint Events| K
+    F -.->|Support Events| K
+    G -.->|Notifications| K
+
+    K -.-> C
+    K -.-> D
+    K -.-> E
+    K -.-> F
+    K -.-> G
+
+%% Styling
+    classDef client fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef gateway fill:#7af,stroke:#333,stroke-width:2px;
+    classDef service fill:#9f9,stroke:#333,stroke-width:2px;
+    classDef infra fill:#f96,stroke:#333,stroke-width:2px;
+    classDef db fill:#69f,stroke:#333,stroke-width:2px;
+
+    class A client
+    class B gateway
+    class C,D,E,F,G service
+    class K infra
+    class DB,R db
 ```
