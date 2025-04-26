@@ -13,6 +13,7 @@
         <module>course</module>
         <module>user</module>
         <module>notification</module>
+        <module>complaint</module>
         <module>support</module>
     </modules>
 

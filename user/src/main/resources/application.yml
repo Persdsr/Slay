@@ -40,7 +40,7 @@ spring:
       charset: UTF-8
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
 
 server:
   tomcat:
@@ -77,3 +77,12 @@ resilience4j:
     instances:
       user-service:
         baseConfig: default
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    version: openapi_3_0
+    groups:
+      enabled: true

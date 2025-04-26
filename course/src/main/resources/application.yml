@@ -49,7 +49,7 @@ spring:
         enabled: true
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -100,3 +100,12 @@ resilience4j:
     instances:
       user-service:
         baseConfig: default
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    version: openapi_3_0
+    groups:
+      enabled: true

@@ -14,6 +14,6 @@ COPY --from=build target/*.jar app.jar
 
 COPY src/main/resources/.env ./.env
 
-EXPOSE 8002
+EXPOSE 8003
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]

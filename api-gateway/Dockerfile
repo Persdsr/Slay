@@ -12,8 +12,6 @@ FROM eclipse-temurin:17
 
 COPY --from=build target/*.jar app.jar
 
-COPY src/main/resources/.env ./.env
-
-EXPOSE 8002
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]

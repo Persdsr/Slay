@@ -1,4 +1,4 @@
-package com.slay.course.config;
+package com.slay.complaint.config;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -28,7 +28,7 @@ public class SwaggerConfig {
                 .info(new Info().title("SLAY"))
                 .servers(
                         List.of(
-                                new Server().url("http://localhost:8080")
+                                new Server().url("http://localhost:8004")
                         )
                 )
                 .components(new Components()
