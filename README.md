@@ -26,49 +26,40 @@
 
 ```mermaid
 flowchart TD
-    A["🌐 Клиент (Web/Mobile)"] -->|HTTP/HTTPS| B["🚪 API Gateway"]
+    A[Клиент] -->|HTTP| B[API Gateway]
 
-    subgraph Backend Services
-        B --> C["👤 User Service\n(JWT Auth, Profiles)"]
-        B --> D["📚 Course Service\n(Learning Content)"]
-        B --> E["⚠️ Complaint Service\n(Moderation)"]
-        B --> F["🛟 Support Service\n(Helpdesk)"]
-        B --> G["🔔 Notification Service\n(Emails/Push)"]
+    subgraph "Микросервисы"
+        B --> C[User Service]
+        B --> D[Course Service]
+        B --> E[Complaint Service]
+        B --> F[Support Service]
+        B --> G[Notification Service]
     end
 
-    subgraph Infrastructure["🛠️ Infrastructure"]
-        K["📡 Kafka Broker\n(Event Bus)"]
-        DB["🗄️ PostgreSQL\n(Main Data)"]
-        R["⚡ Redis\n(Cache/Sessions)"]
+    subgraph "Инфраструктура"
+        K[Kafka]
+        DB[(PostgreSQL)]
+        Redis[(Redis)]
     end
 
-%% Database connections
     C & D & E & F & G --> DB
-    C & D & E & F & G --> R
+    C & D & E & F & G --> Redis
 
-%% Event-driven connections
-    C -.->|User Events| K
-    D -.->|Course Events| K
-    E -.->|Complaint Events| K
-    F -.->|Support Events| K
-    G -.->|Notifications| K
+    C <-.-> K
+    D <-.-> K
+    E <-.-> K
+    F <-.-> K
+    G <-.-> K
 
-    K -.-> C
-    K -.-> D
-    K -.-> E
-    K -.-> F
-    K -.-> G
+    classDef service fill:#21c483, stroke:#1F1F23, color: #fff, font-weight: 900,stroke-width:2px;
+    classDef kafka fill:#fff, stroke:#111, color:#111, font-weight: 900,stroke-width:2px;
+    classDef redis fill:#c6302b, stroke:#fff, font-weight: 900,stroke-width:2px;
+    classDef db fill:#2f6792, stroke:#fff, font-weight: 900,stroke-width:2px;
+    classDef base fill:#1F1F23, stroke:#fff, font-weight: 900,stroke-width:2px;
 
-%% Styling
-    classDef client fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef gateway fill:#7af,stroke:#333,stroke-width:2px;
-    classDef service fill:#9f9,stroke:#333,stroke-width:2px;
-    classDef infra fill:#f96,stroke:#333,stroke-width:2px;
-    classDef db fill:#69f,stroke:#333,stroke-width:2px;
-
-    class A client
-    class B gateway
     class C,D,E,F,G service
-    class K infra
-    class DB,R db
+    class Redis redis
+    class K kafka
+    class DB db
+    class A,B base
 ```
