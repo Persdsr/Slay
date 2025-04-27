@@ -51,8 +51,8 @@ flowchart TD
     F <-.-> K
     G <-.-> K
 
-    classDef service fill:#21c483, stroke:#1F1F23, color: #fff, font-weight: 900,stroke-width:2px;
-    classDef kafka fill:#fff, stroke:#111, color:#111, font-weight: 900,stroke-width:2px;
+    classDef service fill:#21c483, stroke:#1F1F23, color: #fff, font-weight: 900,stroke-width:2px, font-size: 12px, font-size: 20px;
+    classDef kafka fill:#fff, stroke:#111, color:#111, font-weight: 900,stroke-width:2px, font-size: 22px;
     classDef redis fill:#c6302b, stroke:#fff, font-weight: 900,stroke-width:2px;
     classDef db fill:#2f6792, stroke:#fff, font-weight: 900,stroke-width:2px;
     classDef base fill:#1F1F23, stroke:#fff, font-weight: 900,stroke-width:2px;
