@@ -37,7 +37,7 @@ public class UserService {
     private final CourseServiceClient courseServiceClient;
     //private final ChatRepo chatRepo;
 
-    @Cacheable(value = "user-profile", key = "#profileUsername")
+    //Cacheable(value = "user-profile", key = "#profileUsername")
     public UserProfileDTO getAuthorProfile(UserDetailsImpl userDetails, String profileUsername) {
         UserEntity profileUser = userRepo.findByUsername(profileUsername).orElseThrow(
                 () -> UserNotFoundException.builder().build()

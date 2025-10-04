@@ -55,7 +55,6 @@ public class TrainingCourseController {
         return ResponseEntity.ok().body(trainingCourseService.getCoursesByIds(ids));
     }
 
-
     @PostMapping("/buy")
     @PreAuthorize("isAuthenticated()")
     public String buyTest(@RequestParam("courseId") Integer courseId,

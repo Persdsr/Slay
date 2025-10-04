@@ -60,4 +60,5 @@ public class TrainingCourseDetailDTO implements CourseResponse{
         return trainingCourseDetailDTO;
 
     }
+
 }

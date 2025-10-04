@@ -49,6 +49,6 @@ public class SupportRequestEntity {
     private boolean resolved = false;
 
     @Column(name = "resolver_id")
-    private int resolvedBy;
+    private Integer resolvedBy;
 
 }

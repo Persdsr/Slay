@@ -32,8 +32,8 @@ public class SupportService {
                 .collect(Collectors.toList());
     }
 
-    public List<SupportRequestDTO> getAllUserSupportRequests(int supportId) {
-        return supportRepo.findAllBySender(supportId).stream()
+    public List<SupportRequestDTO> getAllUserSupportRequests(int senderId) {
+        return supportRepo.findAllBySender(senderId).stream()
                 .map(SupportRequestDTO::toModel)
                 .collect(Collectors.toList());
     }

@@ -8,22 +8,22 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://user:8001
+          uri: http://localhost:8001
           predicates:
             - Path=/api/auth/**, /api/user/**, /api/chat/**
 
         - id: course-service
-          uri: http://course:8002
+          uri: http://localhost:8002
           predicates:
             - Path=/api/training-course/**, /api/category/**
       
         - id: support-service
-          uri: http://support:8003
+          uri: http://localhost:8003
           predicates:
             - Path=/api/support/**
 
         - id: complaint-service
-          uri: http://complaint:8004
+          uri: http://localhost:8004
           predicates:
             - Path=/api/complaint/**, /api/complaint-course/**, /api/complaint-user/**
 

@@ -69,12 +69,12 @@ public class SupportController {
         "- Модераторы (`MODERATOR`)." +
         "- Сам пользователь (только для своих запросов)."
     )
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR') or @supportPermissionService.isSupportSender(#supportId, userDetails.id)")
+    //@PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR') or @supportPermissionService.isSupportSender(#senderId, #userDetails.id)")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SupportRequestDTO>> getAllUserSupportRequests(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable("userId") int supportId) {
-        return new ResponseEntity<>(supportService.getAllUserSupportRequests(supportId), HttpStatus.OK);
+            @PathVariable("userId") int senderId) {
+        return new ResponseEntity<>(supportService.getAllUserSupportRequests(senderId), HttpStatus.OK);
     }
 
     @Operation(
@@ -84,9 +84,11 @@ public class SupportController {
         "- Модераторы (`MODERATOR`)." +
         "- Пользователь, который отправил запрос."
     )
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR') or @supportPermissionService.isSupportSender(#supportId, principal.username)")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR') or @supportPermissionService.isSupportSender(#supportId, #userDetails.id)")
     @GetMapping("/{supportId}")
-    public ResponseEntity<SupportRequestDTO> getSupportDetail(@PathVariable("supportId") int supportId) {
+    public ResponseEntity<SupportRequestDTO> getSupportDetail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable("supportId") int supportId) {
         return new ResponseEntity<>(supportService.getSupportDetailById(supportId), HttpStatus.OK);
     }
 

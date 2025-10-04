@@ -62,13 +62,13 @@ public class TrainingCourseService {
     private final String TOPIC = "buy-course";
 
 
-    @Cacheable(value = "course-course-detail", key = "#courseId")
+    //@Cacheable(value = "course-course-detail", key = "#courseId")
     public CourseResponse getTrainingCourseDetail(UserDetailsImpl userDetails, int courseId) {
         TrainingCourseEntity trainingCourse = trainingCourseRepo.findById(courseId).orElseThrow(
                 () -> TrainingCourseNotFoundException.builder().build()
         );
 
-        if (userDetails == null) {
+        /*if (userDetails == null) {
             TrainingCourseCroppedDTO trainingCourseCroppedDTO = TrainingCourseCroppedDTO.toModel(trainingCourse);
             try {
                 trainingCourseCroppedDTO.setAuthor(userServiceClient.getUserLiteInfo(trainingCourse.getAuthorId()));
@@ -97,7 +97,15 @@ public class TrainingCourseService {
                 trainingCourseCroppedDTO.setAuthor(null);
             }
             return trainingCourseCroppedDTO;
+        }*/
+        TrainingCourseDetailDTO course = TrainingCourseDetailDTO.toModel(trainingCourse);
+
+        try {
+            course.setAuthor(userServiceClient.getUserLiteInfo(trainingCourse.getAuthorId()));
+        } catch (Exception e) {
+            course.setAuthor(null);
         }
+        return course;
     }
 
     @Cacheable(value = "user-course-courses", key = "#userDetails.username")
